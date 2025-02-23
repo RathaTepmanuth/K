@@ -13,6 +13,11 @@ local Tab = Window:MakeTab({
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
+local Tab2 = Window:MakeTab({
+    Name = "auto farm",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
 
 if not game:IsLoaded() then repeat game.Loaded:Wait() until game:IsLoaded() end
 if game.PlaceId == 2753915549 then
@@ -1723,12 +1728,6 @@ spawn(function()
 		end
 	end
 end)
-
-local Tab2 = Window:MakeTab({
-    Name = "auto farm",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
 
 Tab2:AddDropdown({
 	Name = "choose the auto",
