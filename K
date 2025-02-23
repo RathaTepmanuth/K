@@ -2081,4 +2081,5 @@ Tab2:AddToggle({
 	Default = false,
 	Callback = function(Value)
         _G.AutoFarm = Value
+	end    
 })
