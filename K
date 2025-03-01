@@ -4223,7 +4223,6 @@ function UpdateRealFruitEsp()
         end
     end
 end
-v17.ToggleUpgrade:SetValue(false);
 local v56 = v16.Shop:AddSection("ability");
 v16.Shop:AddButton({
     Title = "haki skyjump",
@@ -4324,7 +4323,7 @@ v16.Shop:AddButton({
         game.ReplicatedStorage.Remotes.CommF_:InvokeServer("ThunderGodTalk");
     end
 });
-local v56 = v16.Shop:AddSection("Võ");
+local v56 = v16.Shop:AddSection("fighting style");
 v16.Shop:AddButton({
     Title = "Black Leg",
     Description = "",
@@ -4404,7 +4403,7 @@ v16.Shop:AddButton({
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySanguineArt");
     end
 });
-local v56 = v16.Shop:AddSection("Khác");
+local v56 = v16.Shop:AddSection("Fragment");
 v16.Shop:AddButton({
     Title = "change refund",
     Description = "",
@@ -4421,3 +4420,64 @@ v16.Shop:AddButton({
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BlackbeardReward", "Reroll", "2");
     end
 });
+local v56 = v16.Misc:AddSection("Change");
+v16.Misc:AddButton({
+    Title = "pirate",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetTeam", "Pirates");
+    end
+});
+v16.Misc:AddButton({
+    Title = "Get all code",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetTeam", "Marines");
+    end
+});
+local v56 = v16.Misc:AddSection("Code");
+local v150 = {
+    "KITT_RESET",
+    "Sub2UncleKizaru",
+    "SUB2GAMERROBOT_RESET1",
+    "Sub2Fer999",
+    "Enyu_is_Pro",
+    "JCWK",
+    "StarcodeHEO",
+    "MagicBus",
+    "KittGaming",
+    "Sub2CaptainMaui",
+    "Sub2OfficalNoobie",
+    "TheGreatAce",
+    "Sub2NoobMaster123",
+    "Sub2Daigrock",
+    "Axiore",
+    "StrawHatMaine",
+    "TantaiGaming",
+    "Bluxxy",
+    "SUB2GAMERROBOT_EXP1",
+    "Chandler",
+    "NOMOREHACK",
+    "BANEXPLOIT",
+    "WildDares",
+    "BossBuild",
+    "GetPranked",
+    "EARN_FRUITS",
+    "FIGHT4FRUIT",
+    "NOEXPLOITER",
+    "NOOB2ADMIN",
+    "CODESLIDE",
+    "ADMINHACKED",
+    "ADMINDARES",
+    "fruitconcepts",
+    "krazydares",
+    "TRIPLEABUSE",
+    "SEATROLLING",
+    "24NOADMIN",
+    "REWARDFUN",
+    "NEWTROLL",
+    "fudd10_v2",
+    "Fudd10",
+    "Bignews",
+    "SECRET_ADMIN"
+};
