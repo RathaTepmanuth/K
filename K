@@ -308,6 +308,62 @@ v5:Destroy();
 --         pcall(v422);
 --     end
 -- end);
+local v22 = Instance.new("ScreenGui");
+local v23 = Instance.new("ImageButton");
+local v24 = Instance.new("UICorner");
+local v25 = Instance.new("ParticleEmitter");
+local v26 = game:GetService("TweenService");
+v22.Parent = game.CoreGui;
+v22.ZIndexBehavior = Enum.ZIndexBehavior.Sibling;
+v23.Parent = v22;
+v23.BackgroundColor3 = Color3.fromRGB(0, 0, 0);
+v23.BorderSizePixel = 0;
+v23.Position = UDim2.new(0.120833337 - 0.1, 0, 0.0952890813 + 0.01, 0);
+v23.Size = UDim2.new(0, 50, 0, 50);
+v23.Draggable = true;
+v23.Image = "http://www.roblox.com/asset/?id=1388116962";
+v24.Parent = v23;
+v24.CornerRadius = UDim.new(0, 12);
+v25.Parent = v23;
+v25.LightEmission = 1;
+v25.Size = NumberSequence.new({
+    NumberSequenceKeypoint.new(0, 0.1),
+    NumberSequenceKeypoint.new(1, 0)
+});
+v25.Lifetime = NumberRange.new(0.5, 1);
+v25.Rate = 0;
+v25.Speed = NumberRange.new(5, 10);
+v25.Color = ColorSequence.new(Color3.fromRGB(255, 85, 255), Color3.fromRGB(85, 255, 255));
+local v47 = v26:Create(v23, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+    Rotation = 360
+});
+v23.MouseButton1Down:Connect(function()
+    v25.Rate = 100;
+    task.delay(1, function()
+        v25.Rate = 0;
+    end);
+    v47:Play();
+    game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.End, false, game);
+    v47.Completed:Connect(function()
+        v23.Rotation = 0;
+    end);
+    local v235 = v26:Create(v23, TweenInfo.new(0.2, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+        Size = UDim2.new(0, 60, 0, 60)
+    });
+    v235:Play();
+    v235.Completed:Connect(function()
+        local v483 = v26:Create(v23, TweenInfo.new(0.2, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out), {
+            Size = UDim2.new(0, 50, 0, 50)
+        });
+        v483:Play();
+    end);
+end);
+if game:GetService("ReplicatedStorage").Effect.Container:FindFirstChild("Death") then
+    game:GetService("ReplicatedStorage").Effect.Container.Death:Destroy();
+end
+if game:GetService("ReplicatedStorage").Effect.Container:FindFirstChild("Respawn") then
+    game:GetService("ReplicatedStorage").Effect.Container.Respawn:Destroy();
+end
 local v14 = loadstring(game:HttpGet("https://raw.githubusercontent.com/obfalchx/testfluent/refs/heads/main/FluentTrau"))();
 local v15 = v14:CreateWindow({
     Title = "AngkorWat hub",
@@ -2795,7 +2851,7 @@ spawn(function()
         end
     end
 end);
-local v56 = v16.Main:AddSection("Thông Thạo");
+local v56 = v16.Main:AddSection("mastery");
 local v57 = v16.Main:AddDropdown("DropdownMastery", {
     Title = "Skilled",
     Description = "",
@@ -3498,7 +3554,7 @@ end);
 v17.ToggleF:SetValue(true);
 local v99 = v16.Status:AddParagraph({
     Title = "Information",
-    Content = "━━━━━━━━━━━━━━━━━━━━━\n" .. "Tên : " .. game.Players.LocalPlayer.DisplayName .. " (@" .. game.Players.LocalPlayer.Name .. ")\n" .. "Cấp : " .. game:GetService("Players").LocalPlayer.Data.Level.Value .. "\n" .. "Tiền : " .. game:GetService("Players").LocalPlayer.Data.Beli.Value .. "\n" .. "Điểm F : " .. game:GetService("Players").LocalPlayer.Data.Fragments.Value .. "\n" .. "Tiền Truy Nã : " .. game:GetService("Players").LocalPlayer.leaderstats["Bounty/Honor"].Value .. "\n" .. "Máu: " .. game.Players.LocalPlayer.Character.Humanoid.Health .. "/" .. game.Players.LocalPlayer.Character.Humanoid.MaxHealth .. "\n" .. "Năng Lượng : " .. game.Players.LocalPlayer.Character.Energy.Value .. "/" .. game.Players.LocalPlayer.Character.Energy.MaxValue .. "\n" .. "Tộc : " .. game:GetService("Players").LocalPlayer.Data.Race.Value .. "\n" .. "Trái : " .. game:GetService("Players").LocalPlayer.Data.DevilFruit.Value .. "\n" .. "━━━━━━━━━━━━━━━━━━━━━"
+    Content = "━━━━━━━━━━━━━━━━━━━━━\n" .. "Name : " .. game.Players.LocalPlayer.DisplayName .. " (@" .. game.Players.LocalPlayer.Name .. ")\n" .. "Level : " .. game:GetService("Players").LocalPlayer.Data.Level.Value .. "\n" .. "Beli : " .. game:GetService("Players").LocalPlayer.Data.Beli.Value .. "\n" .. "Fragment : " .. game:GetService("Players").LocalPlayer.Data.Fragments.Value .. "\n" .. "Bounty/Honor: " .. game:GetService("Players").LocalPlayer.leaderstats["Bounty/Honor"].Value .. "\n" .. "Health: " .. game.Players.LocalPlayer.Character.Humanoid.Health .. "/" .. game.Players.LocalPlayer.Character.Humanoid.MaxHealth .. "\n" .. "Energy : " .. game.Players.LocalPlayer.Character.Energy.Value .. "/" .. game.Players.LocalPlayer.Character.Energy.MaxValue .. "\n" .. "Race : " .. game:GetService("Players").LocalPlayer.Data.Race.Value .. "\n" .. "Fruit : " .. game:GetService("Players").LocalPlayer.Data.DevilFruit.Value .. "\n" .. "━━━━━━━━━━━━━━━━━━━━━"
 });
 local v100 = v16.Status:AddParagraph({
     Title = "Time",
@@ -3755,7 +3811,7 @@ spawn(function()
         end
     end
 end);
-local v56 = v16.Player:AddSection("Khác");
+local v56 = v16.Player:AddSection("Other");
 local v115 = v16.Player:AddToggle("ToggleNoClip", {
     Title = "No clip",
     Description = "",
@@ -3839,7 +3895,7 @@ v16.Teleport:AddButton({
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelZou");
     end
 });
-local v56 = v16.Teleport:AddSection("Đảo");
+local v56 = v16.Teleport:AddSection("Teleport to island");
 if Sea1 then
     IslandList = {
         "WindMill",
@@ -4025,7 +4081,7 @@ v16.Teleport:AddButton({
 });
 ---Visual---
 v16.Visual:AddButton({
-    Title = "Fake",
+    Title = "Fake everything",
     Description = "",
     Callback = function()
         local v318 = game:GetService("Players").LocalPlayer;
