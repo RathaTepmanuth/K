@@ -4224,7 +4224,7 @@ function UpdateRealFruitEsp()
     end
 end
 v17.ToggleUpgrade:SetValue(false);
-local v56 = v16.Shop:AddSection("Khả Năng");
+local v56 = v16.Shop:AddSection("ability");
 v16.Shop:AddButton({
     Title = "haki skyjump",
     Description = "",
