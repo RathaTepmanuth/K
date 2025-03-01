@@ -2308,6 +2308,8 @@ function to(v233)
     end);
 end
 
+---main---
+
 local v48 = v16.Main:AddDropdown("DropdownSelectWeapon", {
     Title = "select tool",
     Description = "",
@@ -2409,6 +2411,303 @@ spawn(function()
                             end
                         end
                     end
+                end
+            end);
+        end
+    end
+end);
+
+local v50 = v16.Main:AddToggle("ToggleMobAura", {
+    Title = "Mob aura",
+    Description = "",
+    Default = false
+});
+v50:OnChanged(function(v238)
+    _G.AutoNear = v238;
+    if (v238 == false) then
+        wait();
+        Tween(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame);
+        wait();
+    end
+end);
+v17.ToggleMobAura:SetValue(false);
+spawn(function()
+    while wait() do
+        if _G.AutoNear then
+            pcall(function()
+                for v838, v839 in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if (v839:FindFirstChild("Humanoid") and v839:FindFirstChild("HumanoidRootPart") and (v839.Humanoid.Health > 0)) then
+                        if v839.Name then
+                            if ((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v839:FindFirstChild("HumanoidRootPart").Position).Magnitude <= 5000) then
+                                repeat
+                                    wait(_G.Fast_Delay);
+                                    AttackNoCoolDown();
+                                    bringmob = true;
+                                    AutoHaki();
+                                    EquipTool(SelectWeapon);
+                                    Tween(v839.HumanoidRootPart.CFrame * Pos);
+                                    v839.HumanoidRootPart.Size = Vector3.new(60, 60, 60);
+                                    v839.HumanoidRootPart.Transparency = 1;
+                                    v839.Humanoid.JumpPower = 0;
+                                    v839.Humanoid.WalkSpeed = 0;
+                                    v839.HumanoidRootPart.CanCollide = false;
+                                    FarmPos = v839.HumanoidRootPart.CFrame;
+                                    MonFarm = v839.Name;
+                                until not _G.AutoNear or not v839.Parent or (v839.Humanoid.Health <= 0) or not game.Workspace.Enemies:FindFirstChild(v839.Name)
+                                bringmob = false;
+                            end
+                        end
+                    end
+                end
+            end);
+        end
+    end
+end);
+
+local v55 = v16.Main:AddToggle("ToggleCollectChest", {
+    Title = "Auto chest",
+    Description = "",
+    Default = false
+});
+v55:OnChanged(function(v248)
+    _G.AutoCollectChest = v248;
+end);
+spawn(function()
+    while wait() do
+        if _G.AutoCollectChest then
+            local v673 = game:GetService("Players");
+            local v674 = v673.LocalPlayer;
+            local v675 = v674.Character or v674.CharacterAdded:Wait() ;
+            local v676 = v675:GetPivot().Position;
+            local v677 = game:GetService("CollectionService");
+            local v678 = v677:GetTagged("_ChestTagged");
+            local v679, v680 = math.huge;
+            for v765 = 1, # v678 do
+                local v766 = v678[v765];
+                local v767 = (v766:GetPivot().Position - v676).Magnitude;
+                if (not v766:GetAttribute("IsDisabled") and (v767 < v679)) then
+                    v679, v680 = v767, v766;
+                end
+            end
+            if v680 then
+                local v840 = v680:GetPivot().Position;
+                local v841 = CFrame.new(v840);
+                Tween2(v841);
+            end
+        end
+    end
+end);
+local v56 = v16.Main:AddSection("Thông Thạo");
+local v57 = v16.Main:AddDropdown("DropdownMastery", {
+    Title = "Skilled",
+    Description = "",
+    Values = {
+        "Near Mobs"
+    },
+    Multi = false,
+    Default = 1
+});
+v57:SetValue(TypeMastery);
+v57:OnChanged(function(v249)
+    TypeMastery = v249;
+end);
+local v58 = v16.Main:AddToggle("ToggleMasteryFruit", {
+    Title = "Auto MasteryFruit",
+    Description = "",
+    Default = false
+});
+v58:OnChanged(function(v250)
+    AutoFarmMasDevilFruit = v250;
+end);
+v17.ToggleMasteryFruit:SetValue(false);
+local v59 = v16.Main:AddSlider("SliderHealt", {
+    Title = "Kill percent",
+    Description = "",
+    Default = 20,
+    Min = 0,
+    Max = 100,
+    Rounding = 1,
+    Callback = function(v251)
+        KillPercent = v251;
+    end
+});
+v59:OnChanged(function(v252)
+    KillPercent = v252;
+end);
+v59:SetValue(20);
+spawn(function()
+    while task.wait() do
+        if _G.UseSkill then
+            pcall(function()
+                if _G.UseSkill then
+                    for v1032, v1033 in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                        if ((v1033.Name == MonFarm) and v1033:FindFirstChild("Humanoid") and v1033:FindFirstChild("HumanoidRootPart") and (v1033.Humanoid.Health <= ((v1033.Humanoid.MaxHealth * KillPercent) / 100))) then
+                            repeat
+                                game:GetService("RunService").Heartbeat:wait();
+                                EquipTool(game.Players.LocalPlayer.Data.DevilFruit.Value);
+                                Tween(v1033.HumanoidRootPart.CFrame * Pos);
+                                PositionSkillMasteryDevilFruit = v1033.HumanoidRootPart.Position;
+                                if game:GetService("Players").LocalPlayer.Character:FindFirstChild(game.Players.LocalPlayer.Data.DevilFruit.Value) then
+                                    game:GetService("Players").LocalPlayer.Character:FindFirstChild(game.Players.LocalPlayer.Data.DevilFruit.Value).MousePos.Value = PositionSkillMasteryDevilFruit;
+                                    local v1606 = game:GetService("Players").LocalPlayer.Character:FindFirstChild(game.Players.LocalPlayer.Data.DevilFruit.Value).Level.Value;
+                                    if (SkillZ and (v1606 >= 1)) then
+                                        game:service("VirtualInputManager"):SendKeyEvent(true, "Z", false, game);
+                                        wait();
+                                        game:service("VirtualInputManager"):SendKeyEvent(false, "Z", false, game);
+                                    end
+                                    if (SkillX and (v1606 >= 2)) then
+                                        game:service("VirtualInputManager"):SendKeyEvent(true, "X", false, game);
+                                        wait();
+                                        game:service("VirtualInputManager"):SendKeyEvent(false, "X", false, game);
+                                    end
+                                    if (SkillC and (v1606 >= 3)) then
+                                        game:service("VirtualInputManager"):SendKeyEvent(true, "C", false, game);
+                                        wait();
+                                        game:service("VirtualInputManager"):SendKeyEvent(false, "C", false, game);
+                                    end
+                                    if (SkillV and (v1606 >= 4)) then
+                                        game:service("VirtualInputManager"):SendKeyEvent(true, "V", false, game);
+                                        wait();
+                                        game:service("VirtualInputManager"):SendKeyEvent(false, "V", false, game);
+                                    end
+                                    if (SkillF and (v1606 >= 5)) then
+                                        game:GetService("VirtualInputManager"):SendKeyEvent(true, "F", false, game);
+                                        wait();
+                                        game:GetService("VirtualInputManager"):SendKeyEvent(false, "F", false, game);
+                                    end
+                                end
+                            until not AutoFarmMasDevilFruit or not _G.UseSkill or (v1033.Humanoid.Health == 0)
+                        end
+                    end
+                end
+            end);
+        end
+    end
+end);
+spawn(function()
+    while task.wait(0.1) do
+        if (AutoFarmMasDevilFruit and (TypeMastery == "Near Mobs")) then
+            pcall(function()
+                for v842, v843 in pairs(game.Workspace.Enemies:GetChildren()) do
+                    if (v843.Name and v843:FindFirstChild("Humanoid") and v843:FindFirstChild("HumanoidRootPart")) then
+                        if ((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v843:FindFirstChild("HumanoidRootPart").Position).Magnitude <= 5000) then
+                            repeat
+                                wait(_G.Fast_Delay);
+                                if (v843.Humanoid.Health <= ((v843.Humanoid.MaxHealth * KillPercent) / 100)) then
+                                    _G.UseSkill = true;
+                                else
+                                    _G.UseSkill = false;
+                                    AutoHaki();
+                                    bringmob = true;
+                                    EquipTool(SelectWeapon);
+                                    Tween(v843.HumanoidRootPart.CFrame * Pos);
+                                    v843.HumanoidRootPart.Size = Vector3.new(60, 60, 60);
+                                    v843.HumanoidRootPart.Transparency = 1;
+                                    v843.Humanoid.JumpPower = 0;
+                                    v843.Humanoid.WalkSpeed = 0;
+                                    v843.HumanoidRootPart.CanCollide = false;
+                                    FarmPos = v843.HumanoidRootPart.CFrame;
+                                    MonFarm = v843.Name;
+                                    AttackNoCoolDown();
+                                end
+                            until not AutoFarmMasDevilFruit or (not MasteryType == "Near Mobs") or not v843.Parent or (v843.Humanoid.Health == 0)
+                            bringmob = false;
+                            _G.UseSkill = false;
+                        end
+                    end
+                end
+            end);
+        end
+    end
+end);
+local v60 = v16.Main:AddSection("boss");
+if Sea1 then
+    tableBoss = {
+        "The Gorilla King",
+        "Bobby",
+        "Yeti",
+        "Mob Leader",
+        "Vice Admiral",
+        "Warden",
+        "Chief Warden",
+        "Swan",
+        "Magma Admiral",
+        "Fishman Lord",
+        "Wysper",
+        "Thunder God",
+        "Cyborg",
+        "Saber Expert"
+    };
+elseif Sea2 then
+    tableBoss = {
+        "Diamond",
+        "Jeremy",
+        "Fajita",
+        "Don Swan",
+        "Smoke Admiral",
+        "Cursed Captain",
+        "Darkbeard",
+        "Order",
+        "Awakened Ice Admiral",
+        "Tide Keeper"
+    };
+elseif Sea3 then
+    tableBoss = {
+        "Stone",
+        "Hydra Leader",
+        "Kilo Admiral",
+        "Captain Elephant",
+        "Beautiful Pirate",
+        "rip_indra True Form",
+        "Longma",
+        "Soul Reaper",
+        "Cake Queen"
+    };
+end
+local v61 = v16.Main:AddDropdown("DropdownBoss", {
+    Title = "select boss",
+    Description = "",
+    Values = tableBoss,
+    Multi = false,
+    Default = 1
+});
+v61:SetValue(_G.SelectBoss);
+v61:OnChanged(function(v253)
+    _G.SelectBoss = v253;
+end);
+local v62 = v16.Main:AddToggle("ToggleAutoFarmBoss", {
+    Title = "auto farm boss",
+    Description = "",
+    Default = false
+});
+v62:OnChanged(function(v254)
+    _G.AutoBoss = v254;
+end);
+v17.ToggleAutoFarmBoss:SetValue(false);
+spawn(function()
+    while wait() do
+        if _G.AutoBoss then
+            pcall(function()
+                if game:GetService("Workspace").Enemies:FindFirstChild(_G.SelectBoss) then
+                    for v1034, v1035 in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                        if (v1035.Name == _G.SelectBoss) then
+                            if (v1035:FindFirstChild("Humanoid") and v1035:FindFirstChild("HumanoidRootPart") and (v1035.Humanoid.Health > 0)) then
+                                repeat
+                                    wait(_G.Fast_Delay);
+                                    AttackNoCoolDown();
+                                    AutoHaki();
+                                    EquipTool(SelectWeapon);
+                                    v1035.HumanoidRootPart.CanCollide = false;
+                                    v1035.Humanoid.WalkSpeed = 0;
+                                    v1035.HumanoidRootPart.Size = Vector3.new(60, 60, 60);
+                                    Tween(v1035.HumanoidRootPart.CFrame * Pos);
+                                    sethiddenproperty(game:GetService("Players").LocalPlayer, "SimulationRadius", math.huge);
+                                until not _G.AutoBoss or not v1035.Parent or (v1035.Humanoid.Health <= 0)
+                            end
+                        end
+                    end
+                elseif game:GetService("ReplicatedStorage"):FindFirstChild(_G.SelectBoss) then
+                    Tween(game:GetService("ReplicatedStorage"):FindFirstChild(_G.SelectBoss).HumanoidRootPart.CFrame * CFrame.new(5, 10, 7));
                 end
             end);
         end
