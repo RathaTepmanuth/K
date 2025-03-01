@@ -2702,7 +2702,7 @@ spawn(function()
     end
 end);
 
-local v63 = v16.Main:AddSection("Nguyên Liệu");
+local v63 = v16.Main:AddSection("Material");
 if Sea1 then
     MaterialList = {
         "Scrap Metal",
@@ -3140,7 +3140,7 @@ spawn(function()
         end);
     end
 end);
-local v93 = v16.Setting:AddSection("Kĩ Năng Thông Thạo");
+local v93 = v16.Setting:AddSection("Skill");
 local v94 = v16.Setting:AddToggle("ToggleZ", {
     Title = "Skill Z",
     Description = "",
@@ -3711,5 +3711,713 @@ v16.Teleport:AddButton({
     Description = "",
     Callback = function()
         CancelTween();
+    end
+});
+---Visual---
+v16.Visual:AddButton({
+    Title = "Fake",
+    Description = "",
+    Callback = function()
+        local v318 = game:GetService("Players").LocalPlayer;
+        local v319 = require(game:GetService("ReplicatedStorage").Notification);
+        local v320 = v318:WaitForChild("Data");
+        local v321 = require(game.ReplicatedStorage:WaitForChild("EXPFunction"));
+        local v322 = require(game:GetService("ReplicatedStorage").Effect.Container.LevelUp);
+        local v323 = require(game:GetService("ReplicatedStorage").Util.Sound);
+        local v324 = game:GetService("ReplicatedStorage").Util.Sound.Storage.Other:FindFirstChild("LevelUp_Proxy") or game:GetService("ReplicatedStorage").Util.Sound.Storage.Other:FindFirstChild("LevelUp") ;
+        function v129(v543)
+            local v544 = v543;
+            while true do
+                local v649, v650 = string.gsub(v544, "^(-?%d+)(%d%d%d)", "%1,%2");
+                v544 = v649;
+                if (v650 == 0) then
+                    break;
+                end
+            end
+            return v544;
+        end
+        v319.new("<Color=Yellow>QUEST COMPLETED!<Color=/>"):Display();
+        v319.new("Earned<Color=Yellow>9,999,999,999,999 Exp.<Color=/>(+None)"):Display();
+        v319.new("Earned<Color=Green>$9,999,999,999,999<Color=/>"):Display();
+        v318.Data.Exp.Value = 999999999999;
+        v318.Data.Beli.Value = v318.Data.Beli.Value + 999999999999 ;
+        delay = 0;
+        count = 0;
+        while (v318.Data.Exp.Value - v321(v320.Level.Value)) > 0 do
+            v318.Data.Exp.Value = v318.Data.Exp.Value - v321(v320.Level.Value) ;
+            v318.Data.Level.Value = v318.Data.Level.Value + 1 ;
+            v318.Data.Points.Value = v318.Data.Points.Value + 3 ;
+            v322({
+                v318
+            });
+            v323.Play(v323, v324.Value);
+            v319.new("<Color=Green>LEVEL UP!<Color=/>(" .. v318.Data.Level.Value .. ")"):Display();
+            count = count + 1 ;
+            if (count >= 5) then
+                delay = tick();
+                count = 0;
+                wait();
+            end
+        end
+    end
+});
+v16.Visual:AddInput("Input_Level", {
+    Title = "fake levels",
+    Default = "",
+    Placeholder = "Nhập",
+    Numeric = false,
+    Finished = false,
+    Callback = function(v327)
+        game:GetService("Players")['LocalPlayer'].Data.Level.Value = tonumber(v327);
+    end
+});
+v16.Visual:AddInput("Input_EXP", {
+    Title = "fake exp",
+    Default = "",
+    Placeholder = "Nhập",
+    Numeric = false,
+    Finished = false,
+    Callback = function(v329)
+        game:GetService("Players")['LocalPlayer'].Data.Exp.Value = tonumber(v329);
+    end
+});
+v16.Visual:AddInput("Input_Beli", {
+    Title = "fake beli",
+    Default = "",
+    Placeholder = "Nhập",
+    Numeric = false,
+    Finished = false,
+    Callback = function(v331)
+        game:GetService("Players")['LocalPlayer'].Data.Beli.Value = tonumber(v331);
+    end
+});
+v16.Visual:AddInput("Input_Fragments", {
+    Title = "fake F",
+    Default = "",
+    Placeholder = "Nhập",
+    Numeric = false,
+    Finished = false,
+    Callback = function(v333)
+        game:GetService("Players")['LocalPlayer'].Data.Fragments.Value = tonumber(v333);
+    end
+});
+local v122 = game.ReplicatedStorage:FindFirstChild("Remotes").CommF_:InvokeServer("GetFruits");
+Table_DevilFruitSniper = {};
+ShopDevilSell = {};
+for v335, v336 in next, v122 do
+    table.insert(Table_DevilFruitSniper, v336.Name);
+    if v336.OnSale then
+        table.insert(ShopDevilSell, v336.Name);
+    end
+end
+---fruit---
+_G.SelectFruit = "Dragon-Dragon";
+_G.PermanentFruit = "Dragon-Dragon";
+_G.AutoBuyFruitSniper = false;
+_G.AutoSwitchPermanentFruit = false;
+local v123 = v16.Fruit:AddDropdown("DropdownFruit", {
+    Title = "Select left",
+    Description = "",
+    Values = Table_DevilFruitSniper,
+    Multi = false,
+    Default = 1
+});
+v123:SetValue(_G.SelectFruit);
+v123:OnChanged(function(v337)
+    _G.SelectFruit = v337;
+end);
+local v111 = v16.Fruit:AddToggle("ToggleFruit", {
+    Title = "Select fruit buy",
+    Description = "",
+    Default = false
+});
+v111:OnChanged(function(v338)
+    if v338 then
+        _G.AutoBuyFruitSniper = true;
+        pcall(function()
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("GetFruits");
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("PurchaseRawFruit", _G.SelectFruit, false);
+        end);
+        _G.AutoBuyFruitSniper = false;
+    end
+end);
+v17.ToggleFruit:SetValue(false);
+local v124 = v16.Fruit:AddDropdown("DropdownPermanentFruit", {
+    Title = "choose permanent",
+    Description = "",
+    Values = Table_DevilFruitSniper,
+    Multi = false,
+    Default = 1
+});
+v124:SetValue(_G.PermanentFruit);
+v124:OnChanged(function(v339)
+    _G.PermanentFruit = v339;
+end);
+local v125 = v16.Fruit:AddToggle("TogglePermanentFruit", {
+    Title = "Swtich permanent fruit",
+    Description = "",
+    Default = false
+});
+v125:OnChanged(function(v340)
+    if v340 then
+        _G.AutoSwitchPermanentFruit = true;
+        pcall(function()
+            local v742 = {
+                [1] = "SwitchFruit",
+                [2] = _G.PermanentFruit
+            };
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(v742));
+        end);
+        _G.AutoSwitchPermanentFruit = false;
+    end
+end);
+v17.TogglePermanentFruit:SetValue(false);
+local v126 = v16.Fruit:AddToggle("ToggleStore", {
+    Title = "auto store",
+    Description = "",
+    Default = false
+});
+v126:OnChanged(function(v341)
+    _G.AutoStoreFruit = v341;
+end);
+v17.ToggleStore:SetValue(false);
+spawn(function()
+    while task.wait() do
+        if _G.AutoStoreFruit then
+            pcall(function()
+                if _G.AutoStoreFruit then
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Bomb Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Bomb Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Bomb-Bomb", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Bomb Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Spike Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Spike Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Spike-Spike", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Spike Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Chop Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Chop Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Chop-Chop", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Chop Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Spring Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Spring Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Spring-Spring", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Spring Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Rocket Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Kilo Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Rocket-Rocket", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Kilo Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Smoke Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Smoke Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Smoke-Smoke", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Smoke Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Spin Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Spin Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Spin-Spin", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Spin Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Flame Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Flame Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Flame-Flame", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Flame Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Falcon Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Falcon Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Falcon", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("alcon Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Ice Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Ice Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Ice-Ice", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Ice Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Sand Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Sand Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Sand-Sand", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Sand Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Dark Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Dark Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Dark-Dark", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Dark Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Ghost Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Revive Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Ghost-Ghost", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Revive Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Diamond Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Diamond Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Diamond-Diamond", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Diamond Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Light Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Light Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Light-Light", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Light Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Love Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Love Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Love-Love", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Love Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Rubber Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Rubber Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Rubber-Rubber", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Rubber Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Barrier Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Barrier Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Barrier-Barrier", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Barrier Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Magma Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Magma Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Magma-Magma", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Magma Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Portal Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Portal Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Door-Door", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Portal Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Quake Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Quake Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Quake-Quake", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Quake Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Buddha Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Buddha Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buddha", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Buddha Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Spider Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Spider Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Spider-Spider", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Spider Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Bird: Phoenix Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Phoenix Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Phoenix", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Phoenix Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Rumble Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Rumble Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Rumble-Rumble", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Rumble Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Pain Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Pain Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Pain-Pain", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Pain Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Gravity Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Gravity Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Gravity-Gravity", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Gravity Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Dough Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Dough Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Dough-Dough", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Dough Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Shadow Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Shadow Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Shadow-Shadow", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Shadow Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Venom Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Venom Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Venom-Venom", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Venom Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Control Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Control Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Control-Control", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Control Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Spirit Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Spirit Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Soul-Soul", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Spirit Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Gas Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Dragon Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Gas-Gas", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Dragon Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Yeti Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Dragon Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Yeti-Yeti", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Dragon Fruit"));
+                    end
+                    if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Dragon Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Dragon Fruit")) then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Dragon-Dragon", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Dragon Fruit"));
+                        if (game:GetService("Players").LocalPlayer.Character:FindFirstChild("Leopard Fruit") or game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Leopard Fruit")) then
+                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StoreFruit", "Leopard-Leopard", game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Leopard Fruit"));
+                        end
+                    end
+                end
+            end);
+        end
+        wait();
+    end
+end);
+local v127 = v16.Fruit:AddToggle("ToggleRandomFruit", {
+    Title = "Random fruit",
+    Description = "",
+    Default = false
+});
+v127:OnChanged(function(v342)
+    _G.Random_Auto = v342;
+end);
+v17.ToggleRandomFruit:SetValue(false);
+spawn(function()
+    pcall(function()
+        while wait() do
+            if _G.Random_Auto then
+                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Cousin", "Buy");
+            end
+        end
+    end);
+end);
+local v128 = v16.Fruit:AddToggle("ToggleCollectTP", {
+    Title = "Teleport to fruit",
+    Description = "",
+    Default = false
+});
+v128:OnChanged(function(v343)
+    _G.CollectFruitTP = v343;
+end);
+v17.ToggleCollectTP:SetValue(false);
+spawn(function()
+    while wait() do
+        if _G.CollectFruitTP then
+            for v801, v802 in pairs(game.Workspace:GetChildren()) do
+                if string.find(v802.Name, "Fruit") then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v802.Handle.CFrame;
+                end
+            end
+        end
+    end
+end);
+local v129 = v16.Fruit:AddToggle("ToggleCollect", {
+    Title = "Tween fruit",
+    Description = "",
+    Default = false
+});
+v129:OnChanged(function(v344)
+    _G.Tweenfruit = v344;
+end);
+v17.ToggleCollect:SetValue(false);
+spawn(function()
+    while wait() do
+        if _G.Tweenfruit then
+            for v803, v804 in pairs(game.Workspace:GetChildren()) do
+                if string.find(v804.Name, "Fruit") then
+                    Tween(v804.Handle.CFrame);
+                end
+            end
+        end
+    end
+end);
+local v56 = v16.Fruit:AddSection("Định Vị");
+local v130 = v16.Fruit:AddToggle("ToggleEspPlayer", {
+    Title = "esp player",
+    Description = "",
+    Default = false
+});
+v130:OnChanged(function(v345)
+    ESPPlayer = v345;
+    UpdatePlayerChams();
+end);
+v17.ToggleEspPlayer:SetValue(false);
+local v131 = v16.Fruit:AddToggle("ToggleEspFruit", {
+    Title = "Esp fruit",
+    Description = "",
+    Default = false
+});
+v131:OnChanged(function(v346)
+    DevilFruitESP = v346;
+    while DevilFruitESP do
+        wait();
+        UpdateDevilChams();
+    end
+end);
+v17.ToggleEspFruit:SetValue(false);
+local v132 = v16.Fruit:AddToggle("ToggleEspIsland", {
+    Title = "Esp island",
+    Description = "",
+    Default = false
+});
+v132:OnChanged(function(v347)
+    IslandESP = v347;
+    while IslandESP do
+        wait();
+        UpdateIslandESP();
+    end
+end);
+v17.ToggleEspIsland:SetValue(false);
+local v133 = v16.Fruit:AddToggle("ToggleEspFlower", {
+    Title = "esp flower",
+    Description = "",
+    Default = false
+});
+v133:OnChanged(function(v348)
+    FlowerESP = v348;
+    UpdateFlowerChams();
+end);
+v17.ToggleEspFlower:SetValue(false);
+spawn(function()
+    while wait() do
+        if FlowerESP then
+            UpdateFlowerChams();
+        end
+        if DevilFruitESP then
+            UpdateDevilChams();
+        end
+        if ChestESP then
+            UpdateChestChams();
+        end
+        if ESPPlayer then
+            UpdatePlayerChams();
+        end
+        if RealFruitESP then
+            UpdateRealFruitChams();
+        end
+    end
+end);
+local v134 = v16.Fruit:AddToggle("ToggleEspRealFruit", {
+    Title = "Esp fruit",
+    Description = "",
+    Default = false
+});
+v134:OnChanged(function(v349)
+    RealFruitEsp = v349;
+    while RealFruitEsp do
+        wait();
+        UpdateRealFruitEsp();
+    end
+end);
+v17.ToggleEspRealFruit:SetValue(false);
+function UpdateRealFruitEsp()
+    for v548, v549 in pairs(game.Workspace.AppleSpawner:GetChildren()) do
+        if v549:IsA("Tool") then
+            if RealFruitEsp then
+                if not v549.Handle:FindFirstChild("NameEsp" .. Number) then
+                    local v1066 = Instance.new("BillboardGui", v549.Handle);
+                    v1066.Name = "NameEsp" .. Number ;
+                    v1066.ExtentsOffset = Vector3.new(0, 1, 0);
+                    v1066.Size = UDim2.new(1, 200, 1, 30);
+                    v1066.Adornee = v549.Handle;
+                    v1066.AlwaysOnTop = true;
+                    local v1073 = Instance.new("TextLabel", v1066);
+                    v1073.Font = Enum.Font.GothamSemibold;
+                    v1073.FontSize = "Size14";
+                    v1073.TextWrapped = true;
+                    v1073.Size = UDim2.new(1, 0, 1, 0);
+                    v1073.TextYAlignment = "Top";
+                    v1073.BackgroundTransparency = 1;
+                    v1073.TextStrokeTransparency = 0.5;
+                    v1073.TextColor3 = Color3.fromRGB(255, 0, 0);
+                    v1073.Text = v549.Name .. " \n" .. v20((game:GetService("Players").LocalPlayer.Character.Head.Position - v549.Handle.Position).Magnitude / 3) .. " Distance" ;
+                else
+                    v549.Handle["NameEsp" .. Number ].TextLabel.Text = v549.Name .. " " .. v20((game:GetService("Players").LocalPlayer.Character.Head.Position - v549.Handle.Position).Magnitude / 3) .. " Distance" ;
+                end
+            elseif v549.Handle:FindFirstChild("NameEsp" .. Number) then
+                v549.Handle:FindFirstChild("NameEsp" .. Number):Destroy();
+            end
+        end
+    end
+    for v550, v551 in pairs(game.Workspace.PineappleSpawner:GetChildren()) do
+        if v551:IsA("Tool") then
+            if RealFruitEsp then
+                if not v551.Handle:FindFirstChild("NameEsp" .. Number) then
+                    local v1085 = Instance.new("BillboardGui", v551.Handle);
+                    v1085.Name = "NameEsp" .. Number ;
+                    v1085.ExtentsOffset = Vector3.new(0, 1, 0);
+                    v1085.Size = UDim2.new(1, 200, 1, 30);
+                    v1085.Adornee = v551.Handle;
+                    v1085.AlwaysOnTop = true;
+                    local v1092 = Instance.new("TextLabel", v1085);
+                    v1092.Font = Enum.Font.GothamSemibold;
+                    v1092.FontSize = "Size14";
+                    v1092.TextWrapped = true;
+                    v1092.Size = UDim2.new(1, 0, 1, 0);
+                    v1092.TextYAlignment = "Top";
+                    v1092.BackgroundTransparency = 1;
+                    v1092.TextStrokeTransparency = 0.5;
+                    v1092.TextColor3 = Color3.fromRGB(255, 174, 0);
+                    v1092.Text = v551.Name .. " \n" .. v20((game:GetService("Players").LocalPlayer.Character.Head.Position - v551.Handle.Position).Magnitude / 3) .. " Distance" ;
+                else
+                    v551.Handle["NameEsp" .. Number ].TextLabel.Text = v551.Name .. " " .. v20((game:GetService("Players").LocalPlayer.Character.Head.Position - v551.Handle.Position).Magnitude / 3) .. " Distance" ;
+                end
+            elseif v551.Handle:FindFirstChild("NameEsp" .. Number) then
+                v551.Handle:FindFirstChild("NameEsp" .. Number):Destroy();
+            end
+        end
+    end
+    for v552, v553 in pairs(game.Workspace.BananaSpawner:GetChildren()) do
+        if v553:IsA("Tool") then
+            if RealFruitEsp then
+                if not v553.Handle:FindFirstChild("NameEsp" .. Number) then
+                    local v1104 = Instance.new("BillboardGui", v553.Handle);
+                    v1104.Name = "NameEsp" .. Number ;
+                    v1104.ExtentsOffset = Vector3.new(0, 1, 0);
+                    v1104.Size = UDim2.new(1, 200, 1, 30);
+                    v1104.Adornee = v553.Handle;
+                    v1104.AlwaysOnTop = true;
+                    local v1111 = Instance.new("TextLabel", v1104);
+                    v1111.Font = Enum.Font.GothamSemibold;
+                    v1111.FontSize = "Size14";
+                    v1111.TextWrapped = true;
+                    v1111.Size = UDim2.new(1, 0, 1, 0);
+                    v1111.TextYAlignment = "Top";
+                    v1111.BackgroundTransparency = 1;
+                    v1111.TextStrokeTransparency = 0.5;
+                    v1111.TextColor3 = Color3.fromRGB(251, 255, 0);
+                    v1111.Text = v553.Name .. " \n" .. v20((game:GetService("Players").LocalPlayer.Character.Head.Position - v553.Handle.Position).Magnitude / 3) .. " Distance" ;
+                else
+                    v553.Handle["NameEsp" .. Number ].TextLabel.Text = v553.Name .. " " .. v20((game:GetService("Players").LocalPlayer.Character.Head.Position - v553.Handle.Position).Magnitude / 3) .. " Distance" ;
+                end
+            elseif v553.Handle:FindFirstChild("NameEsp" .. Number) then
+                v553.Handle:FindFirstChild("NameEsp" .. Number):Destroy();
+            end
+        end
+    end
+end
+v17.ToggleUpgrade:SetValue(false);
+local v56 = v16.Shop:AddSection("Khả Năng");
+v16.Shop:AddButton({
+    Title = "haki skyjump",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyHaki", "Geppo");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Haki aura",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyHaki", "Buso");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Haki flashstep",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyHaki", "Soru");
+    end
+});
+v16.Shop:AddButton({
+    Title = "haki ken",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("KenTalk", "Buy");
+    end
+});
+local v56 = v16.Shop:AddSection("Sword");
+v16.Shop:AddButton({
+    Title = "Cutlass",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyItem", "Cutlass");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Katana",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyItem", "Katana");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Iron Mace",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyItem", "Iron Mace");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Duel Katana",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyItem", "Duel Katana");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Triple Katana",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyItem", "Triple Katana");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Pipe",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyItem", "Pipe");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Dual-Headed Blade",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyItem", "Dual-Headed Blade");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Bisento",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyItem", "Bisento");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Soul Cane",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyItem", "Soul Cane");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Pole V2",
+    Description = "",
+    Callback = function()
+        game.ReplicatedStorage.Remotes.CommF_:InvokeServer("ThunderGodTalk");
+    end
+});
+local v56 = v16.Shop:AddSection("Võ");
+v16.Shop:AddButton({
+    Title = "Black Leg",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyBlackLeg");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Electro",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyElectro");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Fishman Karate",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyFishmanKarate");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Dragon Claw",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BlackbeardReward", "DragonClaw", "1");
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BlackbeardReward", "DragonClaw", "2");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Superhuman",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySuperhuman");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Death Step",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyDeathStep");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Sharkman Karate",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySharkmanKarate", true);
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySharkmanKarate");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Electric Claw",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyElectricClaw");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Dragon Talon",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyDragonTalon");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Godhuman",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyGodhuman");
+    end
+});
+v16.Shop:AddButton({
+    Title = "Sanguine Art",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySanguineArt");
+    end
+});
+local v56 = v16.Shop:AddSection("Khác");
+v16.Shop:AddButton({
+    Title = "change refund",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BlackbeardReward", "Refund", "1");
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BlackbeardReward", "Refund", "2");
+    end
+});
+v16.Shop:AddButton({
+    Title = "change race",
+    Description = "",
+    Callback = function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BlackbeardReward", "Reroll", "1");
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BlackbeardReward", "Reroll", "2");
     end
 });
